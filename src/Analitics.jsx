@@ -7,16 +7,26 @@ const Analytics = () => {
   const [totalData, setTotalData] = useState([]);
   const [redListedData, setRedListedData] = useState([]);
   const [yellowListedData, setYellowListedData] = useState([]);
+  const [approvedCount, setApprovedCount] = useState(null); // Approved count state
+  const [rejectedCount, setRejectedCount] = useState(null); // Rejected count state
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch all datasets concurrently
     const fetchTotalAnalytics = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/Total%20Analytics');
     const fetchRedListedAnalytics = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/RedListed%20Analytics');
-    const fetchYellowListedAnalytics = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/UNListed Analytics');
+    const fetchYellowListedAnalytics = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/UNListed%20Analytics');
+    const fetchApprovedCount = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/approved');
+    const fetchRejectedCount = axios.get('https://projectsyntech-dzb2g7dbebe0amde.southindia-01.azurewebsites.net/api/Analytics/rejected');
 
-    Promise.all([fetchTotalAnalytics, fetchRedListedAnalytics, fetchYellowListedAnalytics])
-      .then(([totalResponse, redListedResponse, yellowListedResponse]) => {
+    Promise.all([
+      fetchTotalAnalytics, 
+      fetchRedListedAnalytics, 
+      fetchYellowListedAnalytics, 
+      fetchApprovedCount, 
+      fetchRejectedCount
+    ])
+      .then(([totalResponse, redListedResponse, yellowListedResponse, approvedResponse, rejectedResponse]) => {
         // Transform the Total Analytics data
         const transformedTotalData = totalResponse.data.map(item => ({
           date: new Date(item.date).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -35,6 +45,11 @@ const Analytics = () => {
           count: item.count
         }));
 
+        // Set the approved and rejected counts
+        setApprovedCount(approvedResponse.data.count);
+        setRejectedCount(rejectedResponse.data.count);
+
+        // Set the data for the charts
         setTotalData(transformedTotalData);
         setRedListedData(transformedRedListedData);
         setYellowListedData(transformedYellowListedData);
@@ -56,9 +71,20 @@ const Analytics = () => {
 
   return (
     <Box style={{ width: '90vw', height: '90vh', padding: '20px' }}>
+      {/* Display approved and rejected counts */}
+      <Box display="flex" justifyContent="space-between" mb={4}>
+        <Typography variant="h6" style={{ marginLeft: '20px' }}>
+          Approved Count: {approvedCount}
+        </Typography>
+        <Typography variant="h6" style={{ marginRight: '20px' }}>
+          Rejected Count: {rejectedCount}
+        </Typography>
+      </Box>
+
       <Typography style={{marginTop:"20px",marginBottom:"20px"}} variant="h4" align="center" gutterBottom>
         Analytics Data
       </Typography>
+
       <Grid container spacing={4}>
         {/* Total Analytics Chart */}
         <Grid item xs={12} md={4}>
