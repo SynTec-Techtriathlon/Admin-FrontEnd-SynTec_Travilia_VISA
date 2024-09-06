@@ -56,7 +56,7 @@ const Analytics = () => {
 
   return (
     <Box style={{ width: '90vw', height: '90vh', padding: '20px' }}>
-      <Typography variant="h4" align="center" gutterBottom>
+      <Typography style={{marginTop:"20px",marginBottom:"20px"}} variant="h4" align="center" gutterBottom>
         Analytics Data
       </Typography>
       <Grid container spacing={4}>
