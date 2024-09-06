@@ -203,6 +203,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "sweetalert2/dist/sweetalert2.min.css"; // Import the CSS for SweetAlert2
 
+
 function DataTable() {
   const MySwal = withReactContent(Swal);
   const [applications, setApplications] = useState([]);
@@ -223,6 +224,7 @@ function DataTable() {
       renderCell: (params) => (
         <Button
           variant="contained"
+          sx={{ backgroundColor: "#E78027",color: "#fff" }}
           size="small"
           onClick={() => handleViewData(params.row)}
         >
@@ -284,6 +286,7 @@ function DataTable() {
             display: flex;
             flex-direction: column;
             height: 100%;
+          
         }
 
         .swal-popup {
@@ -291,6 +294,8 @@ function DataTable() {
             flex-direction: column;
             height: 100vh; /* Ensure the popup fits within the viewport */
             overflow: hidden; /* Hide overflow of the popup itself */
+            width: 60vw; /* Increase the width of the popup (adjust as needed) */
+            max-width: 1200px; /* Optional: Set a max-width for
         }
 
         .swal-popup .swal2-content {
@@ -304,12 +309,27 @@ function DataTable() {
     `;
     document.head.appendChild(style);
     console.log(selectedApplicant);
+    console.log(selectedApplicant.Applicant.Photo)
+    console.log('visa type',selectedApplicant.Applicant.Histories.$values[0].VisaType)
 
     MySwal.fire({
       title: <strong>Application Details</strong>,
       html: `
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 0.5rem; max-height: 70vh;">
-          ${renderMaterialInput("Full Name", selectedApplicant.Applicant.FullName)}
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 0.5rem; max-height: 70vh; text-align: left;">
+  <div style="text-align: left;">
+    <p style="margin: 0; color: #fff;">Profile Image</p>
+    <a href="${selectedApplicant.Applicant.Photo}">
+    <img src="${selectedApplicant.Applicant.Photo}" alt="Applicant Photo" style="position: relative; top: 20px; right: 0; width: 100px; height: 100px; object-fit: cover; border-radius: 10%; border: 2px solid #fff;" />
+
+    </a>
+    </div>
+  <div style="text-align: left;">
+    <p style="margin: 0; color: #fff;">Passport Image</p>
+    <a href="${selectedApplicant.Applicant.Passport.PassportImage}">
+      <img src="${selectedApplicant.Applicant.Passport.PassportImage}" alt="Applicant Photo" style="position: relative; top: 20px; right: 0; width: 100px; height: 100px; object-fit: cover; border-radius: 10%; border: 2px solid #fff;" />
+    </a>
+  </div>
+                ${renderMaterialInput("Full Name", selectedApplicant.Applicant.FullName)}
                 ${renderMaterialInput("Gender", selectedApplicant.Applicant.Gender)}
                 ${renderMaterialInput("Nationality", selectedApplicant.Applicant.Nationality)}
                 ${renderMaterialInput("NIC", selectedApplicant.ApplicantNIC)}
@@ -328,15 +348,18 @@ function DataTable() {
                 ${renderMaterialInput("Email", selectedApplicant.Applicant.Email)}
                 ${renderMaterialInput("Occupation Address", selectedApplicant.Applicant.OccupationAddress)}
 
-                ${renderMaterialInput("Visa type", selectedApplicant.Applicant.VisaType)}
-                ${renderMaterialInput("Visa issued date", new Date(selectedApplicant.Applicant.VisaIssuedDate).toLocaleDateString())}
-                ${renderMaterialInput("Visa validity period", selectedApplicant.Applicant.VisaValidityPeriod)}
-                ${renderMaterialInput("Leaving date", new Date(selectedApplicant.Applicant.VisaIssuedDate).toLocaleDateString())}
-                ${renderMaterialInput("Last location", selectedApplicant.Applicant.LastLocation)}
-                ${renderMaterialInput("Date of arrival", new Date(selectedApplicant.Applicant.VisaIssuedDate).toLocaleDateString())}
-                ${renderMaterialInput("Purpose", selectedApplicant.Applicant.purpose)}
-                ${renderMaterialInput("Rought", selectedApplicant.Applicant.purpose)}
-                ${renderMaterialInput("Status", selectedApplicant.Applicant.status)}
+                ${renderMaterialInput("Visa Type", selectedApplicant.Applicant.Histories.$values[0].VisaType)}
+                ${renderMaterialInput("Visa Issued Date", new Date(selectedApplicant.Applicant.Histories.$values[0].VisaIssuedDate).toLocaleDateString())}
+                ${renderMaterialInput("Visa Validity Period", selectedApplicant.Period)}
+                ${renderMaterialInput("Leaving Date", new Date(selectedApplicant.Applicant.Histories.$values[0].DateLeaving).toLocaleDateString())}
+                ${renderMaterialInput("Last Location", selectedApplicant.Applicant.LastLocation)}
+                ${renderMaterialInput("Date of Arrival", new Date(selectedApplicant.ArrivalDate).toLocaleDateString())}
+                ${renderMaterialInput("Purpose", selectedApplicant.Purpose)}
+                ${renderMaterialInput("Rought", selectedApplicant.Route)}
+                ${renderMaterialInput("Traval Mode", selectedApplicant.TravelMode)}
+                ${renderMaterialInput("Amount of Money", selectedApplicant.AmountOfMoney)}
+                ${renderMaterialInput("Money Type", selectedApplicant.MoneyType)}
+                ${renderMaterialInput("Status", selectedApplicant.Status)}
         </div>
       `,
       background: "#1e1e1e",
@@ -345,7 +368,7 @@ function DataTable() {
       showConfirmButton: true,
       confirmButtonText: "Approve",
       denyButtonText: "Reject",
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#E78027",
       denyButtonColor: "#d33",
       preConfirm: () => {
         handleApprove(selectedApplicant); // Call approve function
@@ -438,6 +461,9 @@ function DataTable() {
 
   return (
     <div id="page-content" style={{ filter: "none" }}>
+      <h1 style={{ color: "#fff", marginLeft: "1vw"}}>
+        Visa Status Overview
+      </h1>
       <div
         style={{
           marginLeft: "1vw",
@@ -463,11 +489,14 @@ function DataTable() {
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#333333",
               color: "#ffffff",
+              
             },
             "& .MuiDataGrid-footerContainer": {
               backgroundColor: "#333333",
               color: "#ffffff",
             },
+            height:"80vh",
+            width: "100%"
           }}
         />
       </div>
