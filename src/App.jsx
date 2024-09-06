@@ -1,5 +1,7 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import DataTable from './DataTable';
+import Analitics from './Analitics';
 
 const darkTheme = createTheme({
   palette: {
@@ -17,7 +19,12 @@ const darkTheme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={darkTheme}>
-      <DataTable />
+      <Router>
+        <Routes>
+          <Route path="/analitics" element={<Analitics />} />  {/* Default Route */}
+          <Route path="/" element={<DataTable />} /> {/* Data Table Route */}
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
