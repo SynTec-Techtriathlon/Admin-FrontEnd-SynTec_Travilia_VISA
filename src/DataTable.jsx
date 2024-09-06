@@ -7,6 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "sweetalert2/dist/sweetalert2.min.css"; // Import the CSS for SweetAlert2
+import { useNavigate } from "react-router-dom";
 
 
 function DataTable() {
@@ -14,6 +15,7 @@ function DataTable() {
   const [applications, setApplications] = useState([]);
   const [selectedApplicant, setSelectedApplicant] = useState(null);
   const [Update, setUpdate] = useState(0);
+  const navigator = useNavigate();
 
   const columns = [
     { field: "applicationNo", headerName: "Application No", width: 150 },
@@ -65,6 +67,10 @@ function DataTable() {
     passportDateOfExpire: user.Applicant.Passport.DateOfExpire,
     passportDateOfIssue: user.Applicant.Passport.DateOfIssue,
   }));
+
+  const handleOnclickAnalytic = () => {
+    navigator(`/analitics`);
+  };
 
   const handleViewData = async (rowData) => {
     const pageContent = document.getElementById("page-content");
@@ -280,6 +286,7 @@ function DataTable() {
             variant="contained"
             sx={{ backgroundColor: "#E78027", color: "#fff" }}
             size="small"
+            onClick={() => handleOnclickAnalytic()}
           >
             Analysis
           </Button>
